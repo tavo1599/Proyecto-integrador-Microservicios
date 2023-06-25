@@ -1,0 +1,37 @@
+server:
+    port: 9090
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: ${EUREKA_URI:http://localhost:8090/eureka}
+    instance:
+        instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+spring:
+    cloud:
+        gateway:
+            globalcors:
+                corsConfigurations:
+                    '[/**]':
+                        allowedOrigins: "http://localhost:4200"
+                        allowedHeaders: "*"
+                        allowedMethods:
+                            - GET
+                            - POST
+                            - PUT
+                            - DELETE
+            discovery:
+                locator:
+                    enabled: true
+            routes:
+                - id: Cliente-Service
+                  uri: lb://Cliente-Service
+                  predicates:
+                      - Path=/clientes/**
+                - id: Producto-Service
+                  uri: lb://Producto-Service
+                  predicates:
+                      - Path=/producto/**
+                - id: Venta-Service
+                  uri: lb://Venta-Service
+                  predicates:
+                      - Path=/venta/**
